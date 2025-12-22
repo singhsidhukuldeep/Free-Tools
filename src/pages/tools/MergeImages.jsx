@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDropzone } from 'react-dropzone'
-import { Upload, Download, X, Layout, Maximize2, Layers, Shield, Square, Minus } from 'lucide-react'
+import { Upload, Download, X, Layout, Maximize2, Layers, Shield, Square, Minus, Trash2 } from 'lucide-react'
 import './MergeImages.css'
 
 const MergeImages = () => {
@@ -323,8 +323,8 @@ const MergeImages = () => {
                                         </div>
                                     </div>
 
-                                    <button className="action-icon-btn" style={{ marginTop: '1rem', width: '100%' }} onClick={clearAll}>
-                                        Clear All Images
+                                    <button className="merge-clear-btn" onClick={clearAll}>
+                                        <Trash2 size={16} /> Clear All Images
                                     </button>
                                 </>
                             )}
