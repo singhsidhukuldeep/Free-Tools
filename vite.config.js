@@ -6,7 +6,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
-  plugins: [react()],
+  plugins: [react(), wasm(), topLevelAwait()],
   base: '/',
   server: {
     headers: {
