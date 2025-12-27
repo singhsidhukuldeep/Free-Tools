@@ -9,6 +9,10 @@ const Home = () => {
     const [activeCategory, setActiveCategory] = useState('all')
     const [searchQuery, setSearchQuery] = useState('')
 
+    const totalToolsInCategory = activeCategory === 'all'
+        ? tools.length
+        : tools.filter(t => t.category === activeCategory).length
+
     const filteredTools = tools
         .filter(tool => {
             const matchesCategory = activeCategory === 'all' || tool.category === activeCategory
@@ -71,7 +75,7 @@ const Home = () => {
                                 <Search size={18} className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Search tools..."
+                                    placeholder={`Search ${totalToolsInCategory} tools...`}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="search-input"

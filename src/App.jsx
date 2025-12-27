@@ -46,6 +46,10 @@ const OrganizePdf = lazy(() => import('./pages/tools/OrganizePdf'))
 const PdfToTxt = lazy(() => import('./pages/tools/PdfToTxt'))
 const PdfThumbnailGenerator = lazy(() => import('./pages/tools/PdfThumbnailGenerator'))
 
+// Audio/Video Tools
+const VideoToAudio = lazy(() => import('./pages/tools/VideoToAudio'))
+const AudioConverter = lazy(() => import('./pages/tools/AudioConverter'))
+
 // Image Tools
 const ImageCompressor = lazy(() => import('./pages/tools/ImageCompressor'))
 const BackgroundRemover = lazy(() => import('./pages/tools/BackgroundRemover'))
@@ -156,6 +160,10 @@ function App() {
                             <Route path="/organize-pdf" element={<OrganizePdf />} />
                             <Route path="/pdf-to-txt" element={<PdfToTxt />} />
                             <Route path="/pdf-thumbnail-generator" element={<PdfThumbnailGenerator />} />
+
+                            {/* Audio/Video */}
+                            <Route path="/video-to-audio" element={<VideoToAudio />} />
+                            <Route path="/audio-converter" element={<AudioConverter />} />
 
                             {/* Image */}
                             <Route path="/image-compressor" element={<ImageCompressor />} />

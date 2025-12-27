@@ -8,6 +8,12 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: command === 'build' ? '/Free-Tools/' : '/',
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
+  },
   worker: {
     plugins: () => []
   }

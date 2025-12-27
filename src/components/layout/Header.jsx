@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Rocket, Twitter, Github, Linkedin } from 'lucide-react'
+import { Menu, X, Rocket, Twitter, Linkedin } from 'lucide-react'
 import './Layout.css'
 
 const Header = () => {
@@ -32,9 +32,7 @@ const Header = () => {
                         <a href="https://twitter.com/kuldeep_s_s" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
                             <Twitter size={18} />
                         </a>
-                        <a href="https://github.com/singhsidhukuldeep" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="GitHub">
-                            <Github size={18} />
-                        </a>
+
                         <a href="https://www.linkedin.com/in/singhsidhukuldeep/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
                             <Linkedin size={18} />
                         </a>
@@ -76,9 +74,7 @@ const Header = () => {
                         <a href="https://twitter.com/kuldeep_s_s" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
                             <Twitter size={20} />
                         </a>
-                        <a href="https://github.com/singhsidhukuldeep" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="GitHub">
-                            <Github size={20} />
-                        </a>
+
                         <a href="https://www.linkedin.com/in/singhsidhukuldeep/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
                             <Linkedin size={20} />
                         </a>

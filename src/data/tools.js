@@ -31,7 +31,10 @@ import {
     Layers,
     Wand2,
     Binary,
-    Layout
+    Layout,
+    FileAudio,
+    Music,
+    Wrench
 } from 'lucide-react'
 
 export const tools = [
@@ -373,8 +376,8 @@ export const tools = [
     {
         id: 'image-converter',
         name: 'Image Converter',
-        description: 'Convert images between all major formats.',
-        seoDescription: 'Universal image converter. Switch between PNG, JPG, WebP, BMP, and TIFF formats easily and free.',
+        description: 'Convert images between PNG, JPG, WebP, BMP, and SVG formats.',
+        seoDescription: 'Universal image converter. Switch between PNG, JPG, WebP, BMP, SVG, and TIFF formats easily and free.',
         path: '/image-converter',
         icon: RefreshCw,
         category: 'image',
@@ -603,6 +606,32 @@ export const tools = [
         featured: false,
         popularity: 50
     },
+
+    // --- Audio Tools (Under Utility) ---
+    {
+        id: 'video-to-audio',
+        name: 'Video to Audio',
+        description: 'Extract MP3 audio from any video file.',
+        seoDescription: 'Extract audio from video. Convert MP4, AVI, MOV to MP3 instantly and securely in your browser.',
+        path: '/video-to-audio',
+        icon: FileAudio,
+        category: 'utility',
+        featured: true,
+        popularity: 88
+    },
+    {
+        id: 'audio-converter',
+        name: 'Audio Converter',
+        description: 'Convert audio to MP3, WAV, FLAC, etc.',
+        seoDescription: 'Universal audio converter. Convert between MP3, WAV, OGG, M4A, and FLAC formats online for free.',
+        path: '/audio-converter',
+        icon: Music,
+        category: 'utility',
+        featured: true,
+        popularity: 85
+    },
+
+    // --- Utility Tools ---
     {
         id: 'json-formatter',
         name: 'JSON Formatter',

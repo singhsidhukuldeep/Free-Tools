@@ -5,41 +5,43 @@ import { useDropzone } from 'react-dropzone'
 import { Image as ImageIcon, Download, Loader2, FileImage, RefreshCw, Zap } from 'lucide-react'
 import { saveAs } from 'file-saver'
 const features = [
-    { title: 'Universal Conversion', desc: 'Convert between all major formats including JPG, PNG, WebP, and BMP effortlessly.', icon: <FileImage color="var(--primary)" size={24} /> },
-    { title: 'Format Optimization', desc: 'Switch to WebP for faster web loading or PNG to preserve transparent backgrounds.', icon: <RefreshCw color="var(--primary)" size={24} /> },
-    { title: 'No Limits', desc: 'Convert as many images as you need locally, without file size restrictions or server uploads.', icon: <Zap color="var(--primary)" size={24} /> }
+    { title: 'Universal Conversion', desc: 'Convert between all major formats including JPG, PNG, WebP, BMP, and SVG.', icon: <FileImage color="var(--primary)" size={24} /> },
+    { title: 'SVG & Vector Support', desc: 'Output images as SVG (embedded) for universal compatibility, or convert SVGs to raster formats.', icon: <RefreshCw color="var(--primary)" size={24} /> },
+    { title: 'Resize & Compress', desc: 'Scale images up to 7x or down to 20%. Adjust quality for JPG/WebP to save space.', icon: <Zap color="var(--primary)" size={24} /> }
 ]
 
 const faqs = [
     {
-        question: "Is image quality preserved during conversion?",
-        answer: "Yes, we use high-quality encoding (0.92 quality) to ensure your new images look crisp and clean."
+        question: "Can I convert images to SVG?",
+        answer: "Yes! You can convert any image (JPG, PNG, etc.) to SVG. Note that this embeds the image inside an SVG wrapper, making it compatible with vector-only software."
     },
     {
-        question: "How do I keep the transparent background?",
-        answer: "To preserve transparency, select 'PNG' or 'WebP' as your output format. Converting to JPG will fill transparency with white."
+        question: "Can I convert SVG to JPG or PNG?",
+        answer: "Absolutely. You can upload an SVG file and convert it to high-quality PNG or JPG files instanty."
     },
     {
-        question: "Is this converter safe?",
-        answer: "Yes! All processing happens in your browser. Your files are never uploaded to any server, guaranteeing 100% privacy."
+        question: "Does resizing affect quality?",
+        answer: "We use high-quality lanczos-like smoothing when scaling. Downscaling generally looks sharp, while upscaling (up to 700%) tries to preserve as much detail as possible."
     },
     {
-        question: "What formats do you support?",
-        answer: "We support converting between JPG, PNG, WebP, and BMP. Support for HEIC and TIFF is coming soon."
+        question: "Is transparency preserved?",
+        answer: "Yes, for PNG, WebP, and SVG formats. Converting to JPG will replace transparency with a white background."
     },
     {
-        question: "Can I convert multiple images?",
-        answer: "Currently, this tool is optimized for single-image precision conversion. For bulk processing, please use our Bulk Image Compressor tool."
+        question: "How does the Quality slider work?",
+        answer: "For JPG and WebP, you can adjust the compression quality from 10% to 100%. Lower quality results in much smaller file sizes."
     },
     {
-        question: "Why use WebP?",
-        answer: "WebP images are often 25-35% smaller than comparable JPGs and PNGs, making your website load faster without losing visual quality."
+        question: "Is it secure?",
+        answer: "100% secure. Use our tool offline if you want! No image ever leaves your device."
     }
 ]
 
 const ImageConverter = () => {
     const [file, setFile] = useState(null)
     const [format, setFormat] = useState('image/jpeg')
+    const [quality, setQuality] = useState(0.92)
+    const [scale, setScale] = useState(1)
     const [isProcessing, setIsProcessing] = useState(false)
     const [convertedUrl, setConvertedUrl] = useState(null)
 
@@ -49,8 +51,10 @@ const ImageConverter = () => {
         const img = new Image()
         img.onload = () => {
             const canvas = document.createElement('canvas')
-            canvas.width = img.width
-            canvas.height = img.height
+            const width = Math.round(img.width * scale)
+            const height = Math.round(img.height * scale)
+            canvas.width = width
+            canvas.height = height
             const ctx = canvas.getContext('2d')
 
             // Handle transparency for JPEG
@@ -59,20 +63,40 @@ const ImageConverter = () => {
                 ctx.fillRect(0, 0, canvas.width, canvas.height)
             }
 
-            ctx.drawImage(img, 0, 0)
+            // High quality smoothing for scaling
+            ctx.imageSmoothingEnabled = true
+            ctx.imageSmoothingQuality = 'high'
+            ctx.drawImage(img, 0, 0, width, height)
 
-            canvas.toBlob((blob) => {
+            if (format === 'image/svg+xml') {
+                // Special handling for SVG output: Embed as base64 inside SVG
+                const dataUrl = canvas.toDataURL('image/png')
+                const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    <image href="${dataUrl}" width="${width}" height="${height}" />
+</svg>`
+                const blob = new Blob([svgContent], { type: 'image/svg+xml' })
                 const url = URL.createObjectURL(blob)
                 setConvertedUrl(url)
                 setIsProcessing(false)
-            }, format, 0.92)
+            } else {
+                // Standard raster conversion
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob)
+                    setConvertedUrl(url)
+                    setIsProcessing(false)
+                }, format, quality)
+            }
         }
         img.src = URL.createObjectURL(file)
     }
 
     const download = () => {
         if (convertedUrl) {
-            const ext = format === 'image/jpeg' ? 'jpg' : format.split('/')[1]
+            let ext
+            if (format === 'image/jpeg') ext = 'jpg'
+            else if (format === 'image/svg+xml') ext = 'svg'
+            else ext = format.split('/')[1]
+
             saveAs(convertedUrl, `converted.${ext}`)
         }
     }
@@ -81,21 +105,27 @@ const ImageConverter = () => {
         if (acceptedFiles?.length > 0) {
             setFile(acceptedFiles[0])
             setConvertedUrl(null)
+            // Reset options on new file
+            setScale(1)
+            setQuality(0.92)
         }
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: { 'image/*': [] },
+        accept: {
+            'image/*': [],
+            'image/svg+xml': ['.svg']
+        },
         multiple: false
     })
 
     return (
         <ToolLayout
             title="Image Converter"
-            description="Convert images between PNG, JPG, WebP, and BMP formats."
-            seoTitle="Free Image Converter - PNG JPG WebP BMP"
-            seoDescription="Convert images online. Support PNG, JPG, WebP, BMP conversions. High quality and secure."
+            description="Convert images between PNG, JPG, WebP, BMP, and SVG formats."
+            seoTitle="Free Image Converter - PNG JPG WebP BMP SVG"
+            seoDescription="Convert images online. Support PNG, JPG, WebP, BMP, and SVG conversions. High quality and secure."
             faqs={faqs}
         >
             <div className="tool-workspace" style={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -132,25 +162,71 @@ const ImageConverter = () => {
 
                             {!isProcessing && !convertedUrl && (
                                 <div style={{ marginBottom: '2rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#334155' }}>Convert to:</label>
-                                    <select
-                                        id="image-converter-format-select"
-                                        value={format}
-                                        onChange={(e) => setFormat(e.target.value)}
-                                        style={{ width: '100%', maxWidth: '300px', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', marginBottom: '1.5rem', fontSize: '1rem' }}
-                                    >
-                                        <option value="image/jpeg">JPG</option>
-                                        <option value="image/png">PNG</option>
-                                        <option value="image/webp">WebP</option>
-                                        <option value="image/bmp">BMP</option>
-                                    </select>
-                                    <br />
+
+                                    {/* Format Selection */}
+                                    <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#334155' }}>
+                                            Convert to:
+                                        </label>
+                                        <select
+                                            id="image-converter-format-select"
+                                            value={format}
+                                            onChange={(e) => setFormat(e.target.value)}
+                                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', fontSize: '1rem' }}
+                                        >
+                                            <option value="image/jpeg">JPG</option>
+                                            <option value="image/png">PNG</option>
+                                            <option value="image/webp">WebP</option>
+                                            <option value="image/bmp">BMP</option>
+                                            <option value="image/svg+xml">SVG (Embed)</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Scale Slider (Available for ALL formats) */}
+                                    <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+                                        <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 'bold', color: '#334155' }}>
+                                            <span>Scale / Resize:</span>
+                                            <span className="text-primary">{Math.round(scale * 100)}%</span>
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min="0.2"
+                                            max="7"
+                                            step="0.2"
+                                            value={scale}
+                                            onChange={(e) => setScale(parseFloat(e.target.value))}
+                                            style={{ width: '100%', accentColor: 'var(--primary)' }}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-1">Resize the output image (20% to 700%)</p>
+                                    </div>
+
+                                    {/* Quality Slider (Only for JPG and WebP) */}
+                                    {(format === 'image/jpeg' || format === 'image/webp') && (
+                                        <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+                                            <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 'bold', color: '#334155' }}>
+                                                <span>Compression Quality:</span>
+                                                <span className="text-primary">{Math.round(quality * 100)}%</span>
+                                            </label>
+                                            <input
+                                                type="range"
+                                                min="0.1"
+                                                max="1"
+                                                step="0.05"
+                                                value={quality}
+                                                onChange={(e) => setQuality(parseFloat(e.target.value))}
+                                                style={{ width: '100%', accentColor: 'var(--primary)' }}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-1">Lower quality = smaller file size</p>
+                                        </div>
+                                    )}
+
                                     <button
                                         id="image-converter-convert-btn"
                                         onClick={handleConvert}
                                         className="btn-primary"
                                         style={{
-                                            padding: '1rem 3rem',
+                                            width: '100%',
+                                            padding: '1rem',
                                             borderRadius: '0.5rem',
                                             background: 'var(--primary)',
                                             color: 'white',
@@ -216,13 +292,13 @@ const ImageConverter = () => {
                     <div className="about-section" style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '1rem', border: '1px solid var(--border)', marginBottom: '2rem' }}>
                         <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>About Free Image Converter</h2>
                         <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            Need to change an image format quickly? Our <strong>Free Image Converter</strong> lets you transform photos between <strong>JPG, PNG, WebP, and BMP</strong> formats in seconds.
+                            Need to change an image format quickly? Our <strong>Free Image Converter</strong> lets you transform photos between <strong>JPG, PNG, WebP, BMP, and SVG</strong> formats in seconds.
                         </p>
                         <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            Whether you need to convert a large PNG to a smaller JPG, or upgrade a photo to the modern WebP format for your website, this tool handles it all.
+                            <strong>New Features:</strong> You can now <strong>convert images to SVG</strong> (useful for vector software compatibility) and <strong>resize/scale</strong> your images up to 700% or down to 20%.
                         </p>
                         <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                            Experience fast, high-quality conversion right in your browser. No software to install, no sign-ups, and absolute privacy for your files.
+                            We also offer a <strong>Quality Slider</strong> for JPG and WebP, giving you full control over the file size vs. quality balance.
                         </p>
                     </div>
                     <div className="features-section" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
