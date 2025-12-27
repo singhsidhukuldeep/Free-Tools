@@ -1,4 +1,34 @@
-# Free Online Tools
+# 🚀 FreeTools (OnlineToolsVault)
+
+<div align="center">
+  <a href="https://onlinetoolsvault.com">
+    <img src="docs/images/desktop-preview.png" alt="FreeTools Desktop Preview" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  </a>
+
+  <h3 align="center">Premium Quality. 100% Free. Privacy Focused.</h3>
+
+  <p align="center">
+    A comprehensive suite of developer, PDF, and image tools running entirely in your browser.
+    <br />
+    <a href="https://onlinetoolsvault.com"><strong>Visit onlinetoolsvault.com »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/OnlineToolsVault/OnlineToolsVault.github.io/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/OnlineToolsVault/OnlineToolsVault.github.io/issues">Request Feature</a>
+  </p>
+
+  <p align="center">
+    <a href="https://twitter.com/kuldeep_s_s" target="_blank">
+        <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter">
+    </a>
+    <a href="https://www.linkedin.com/in/singhsidhukuldeep/" target="_blank">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
+    </a>
+  </p>
+</div>
+
+<br/>
 
 A comprehensive collection of free, secure, and client-side online tools for PDF manipulation, image editing, and more. Built with React, Vite, and modern web technologies.
 
@@ -23,11 +53,15 @@ This project includes a variety of tools that run entirely in the browser, ensur
 - **QR Code Generator**: Create custom QR codes.
 - **Word Counter**: Count words and characters in real-time.
 
+<div align="center">
+  <img src="docs/images/mobile-preview.png" alt="FreeTools Mobile Preview" width="300" style="border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+</div>
+
 ## 🛠️ Tech Stack
 
 - **Framework**: React + Vite
 - **Styling**: Vanilla CSS (CSS Variables, Responsive Design)
-- **Routing**: React Router DOM
+- **Routing**: React Router DOM (v6)
 - **SEO**: React Helmet Async
 - **Icons**: Lucide React
 - **Core Libraries**:
@@ -50,8 +84,8 @@ This project includes a variety of tools that run entirely in the browser, ensur
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/singhsidhukuldeep/Free-Tools.git
-   cd free-tools
+   git clone https://github.com/OnlineToolsVault/OnlineToolsVault.github.io.git
+   cd OnlineToolsVault.github.io
    ```
 
 2. **Install dependencies**
@@ -118,7 +152,7 @@ dist/
 └── ...
 ```
 
-When a user requests `/Free-Tools/word-counter`, GitHub Pages serves the physical file at `dist/word-counter/index.html` with **HTTP 200 OK**.
+When a user requests `/word-counter`, GitHub Pages serves the physical file at `dist/word-counter/index.html` with **HTTP 200 OK**.
 
 ### 🛠️ Automated Workflow
 
@@ -139,4 +173,6 @@ We have automated the entire process to prevent errors:
 
 ---
 
-For detailed implementation notes and changelogs, see the deployment documentation.
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://twitter.com/kuldeep_s_s">Kuldeep Singh Sidhu</a></sub>
+</div>
